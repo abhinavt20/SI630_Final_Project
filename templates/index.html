@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Privacy Policy Analyzer</title>
+  <!-- found online and i like for now but we can change later if we want a better UI... -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body { background: #f4f7f8; padding: 20px; }
+    .container { max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Privacy Policy Analyzer</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-warning">
+          <ul>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+      <div class="form-group">
+        <label for="policy_text">Paste Your Privacy Policy Text:</label>
+        <textarea id="policy_text" name="policy_text" rows="10" class="form-control" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Analyze Policy</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Policy Analysis</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background: #f4f7f8;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .paragraph-box {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      margin-right: 15px;
+    }
+    .legend-item {
+      margin-bottom: 10px;
+      padding: 5px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+    .legend-color {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .row-flex {
+      display: flex;
+    }
+    .col-left {
+      flex: 3;
+      margin-right: 20px;
+    }
+    .col-right {
+      flex: 1;
+      min-width: 250px;
+    }
+    .legend-item.active {
+      background-color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Policy Analysis</h1>
+    <div class="row-flex">
+      <div class="col-left">
+        <h3>Analyzed Paragraphs</h3>
+        {% for para in colored_paragraphs %}
+          <div class="paragraph-box" 
+               data-category="{{ para.categories[0] | default('Unknown') }}" 
+               style="background-color: {{ para.colors[0]|default('#CCCCCC') }};">
+            <p>{{ para.text }}</p>
+            <small><strong>Predicted:</strong> {{ para.categories | join(", ") }}</small>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="col-right">
+        <h3>Legend</h3>
+        {% for cat, info in legend.items() %}
+          <div class="legend-item" data-category="{{ cat }}">
+            <input type="checkbox" class="legend-checkbox" id="legend_{{ loop.index }}" value="{{ cat }}">
+            <label for="legend_{{ loop.index }}">
+              <span class="legend-color" style="background-color: {{ info.color }};"></span>
+              <strong>{{ cat }}</strong>
+            </label>
+            <p style="font-size: 0.9em;">{{ info.description }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <hr>
+    <h3>Select Categories You Care About:</h3>
+    <form method="POST" action="{{ url_for('summary') }}">
+      <input type="hidden" name="policy_text" value="{{ policy_text|e }}">
+      {% for cat in available_categories %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="selected_categories" id="form_cat_{{ loop.index }}" value="{{ cat }}">
+          <label class="form-check-label" for="form_cat_{{ loop.index }}">{{ cat }}</label>
+        </div>
+      {% endfor %}
+      <br>
+      <button type="submit" class="btn btn-success">Generate Summary</button>
+    </form>
+  </div>
+  <script>
+    const legendCheckboxes = document.querySelectorAll('.legend-checkbox');
+    legendCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', filterParagraphs);
+    });
+    
+    function filterParagraphs() {
+      let selected = [];
+      legendCheckboxes.forEach(cb => {
+        if (cb.checked) {
+          selected.push(cb.value);
+        }
+      });
+      
+      const paragraphBoxes = document.querySelectorAll('.paragraph-box');
+      paragraphBoxes.forEach(box => {
+        const category = box.getAttribute('data-category');
+        if (selected.length === 0) {
+          box.style.display = 'block';
+        } else {
+          if (selected.includes(category)) {
+            box.style.display = 'block';
+          } else {
+            box.style.display = 'none';
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

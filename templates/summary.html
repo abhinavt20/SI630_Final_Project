@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generated Summary</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body { background: #f4f7f8; padding: 20px; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; }
+    .summary-box { padding: 15px; background: #e9ecef; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Your Summary</h1>
+    <p><strong>Selected Categories:</strong> {{ selected_categories | join(", ") }}</p>
+    <div class="summary-box">
+        <p style="white-space: normal;">{{ summary_text }}</p>
+    </div>
+    <br>
+    <div class="text-center">
+      <a class="btn btn-primary" href="{{ url_for('index') }}">Start Over</a>
+    </div>
+  </div>
+</body>
+</html>
